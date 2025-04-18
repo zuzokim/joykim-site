@@ -1,0 +1,12 @@
+@font-face {
+  font-family: 'DepartureMono';
+  src: url('/fonts/DepartureMono-Regular.woff') format('woff');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+.english,
+:lang(en) {
+  font-family: 'DepartureMono', Verdana, Arial, sans-serif !important;
+}

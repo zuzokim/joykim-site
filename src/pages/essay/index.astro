@@ -6,7 +6,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from "../../consts";
 import { getCollection } from "astro:content";
 import FormattedDate from "../../components/FormattedDate.astro";
 
-const posts = (await getCollection("blog")).sort(
+const posts = (await getCollection("essay")).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
 );
 ---
@@ -19,12 +19,6 @@ const posts = (await getCollection("blog")).sort(
       main {
         width: 960px;
         margin: 0 auto;
-      }
-
-      .blog-count {
-        display: block;
-        text-align: right;
-        margin-bottom: 6px;
       }
       ul {
         display: flex;
@@ -51,7 +45,7 @@ const posts = (await getCollection("blog")).sort(
         padding: 1rem;
       }
       ul li a:hover {
-        box-shadow: 0 2px 8px rgba(var(--black), 5%);
+        border-color: rgb(var(--gray));
       }
       .blog-card {
         text-decoration: none;
@@ -89,7 +83,6 @@ const posts = (await getCollection("blog")).sort(
         text-overflow: unset;
         color: #111;
         font-weight: bold;
-        
       }
       .excerpt {
         font-size: 1rem;
@@ -114,16 +107,32 @@ const posts = (await getCollection("blog")).sort(
       }
       ul li a:hover h4,
       ul li a:hover .date {
-       text-decoration: underline;
+        color: rgb(var(--gray));
       }
-
+      ul a:hover img {
+        box-shadow: none;
+      }
+      @media (max-width: 720px) {
+        ul {
+          gap: 0.5em;
+        }
+        ul li {
+          width: 100%;
+          text-align: center;
+        }
+        ul li:first-child {
+          margin-bottom: 0;
+        }
+        ul li:first-child .title {
+          font-size: 1.563em;
+        }
+      }
     </style>
   </head>
   <body>
     <Header />
     <main>
       <section>
-        <label class="blog-count">{posts.length} Blogs</label>
         <ul>
           {
             posts.map((post) => (

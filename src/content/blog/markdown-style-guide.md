@@ -1,214 +1,291 @@
 ---
-title: "Markdown Style Guide"
-description: "Here is a sample of some basic Markdown syntax that can be used when writing Markdown content in Astro."
-pubDate: "Jun 19 2024"
-heroImage: "/blog-placeholder-1.jpg"
+title: "백엔드가 없는데 CORS에러를 만나면 feat.Proxy"
+description: "백엔드가 없는데 CORS에러를 만나면 feat.Proxy"
+pubDate: "2025-02-16"
+heroImage: "/blog-placeholder-3.jpg"
 ---
 
-Here is a sample of some basic Markdown syntax that can be used when writing Markdown content in Astro.
+글을 시작하기 전에 CORS에러란 무엇인지 알아보자.
 
-## Headings
+## CORS (Cross-Origin-Resource-Sharing) 에러란?
+CORS에러는 **웹 브라우저의 보안 정책(Same-Origin Policy, SOP)** 때문에 발생하는 에러다. 웹에서 보안상의 이유로, 한 도메인(origin)의 웹 페이지가 다른 도메인의 리소스에 접근하는 것을 제한하는 정책이 존재하는데, 이를 **동일 출처 정책(SOP)** 이라고 한다.
 
-The following HTML `<h1>`—`<h6>` elements represent six levels of section headings. `<h1>` is the highest section level while `<h6>` is the lowest.
+CORS(Cross-Origin Resource Sharing)는 이러한 제한을 완화하기 위한 메커니즘이지만, 적절한 설정이 없을 경우 브라우저가 차단하면서 CORS 에러가 발생한다.
 
-# H1
+그럼 **origin** 은 정확히 뭐냐?
+웹 브라우저는 기본적으로 **다른 출처(Origin)의 요청**을 차단한다. 여기서 출처(Origin)는 다음 세 가지 요소로 결정된다.
 
-## H2
+- **프로토콜 (Protocol)** → `http://`, `https://`
+- **호스트 (Host)** → `example.com`, `api.example.com`
+- **포트 번호 (Port)** → `:3000`, `:8080`
 
-### H3
+즉, 출처(`Origin`)이 다르면 CORS 정책이 적용되며, 서버가 CORS 요청을 허용하지 않으면 요청이 차단된다. 예를 들어, 다음과 같은 상황에서 CORS 에러가 발생할 수 있다.
 
-#### H4
+✅ **출처가 같은 경우 (CORS 에러 없음)**
 
-##### H5
+프론트엔드: `http://example.com`  
+백엔드: `http://example.com`  
 
-###### H6
+❌ **출처가 다른 경우 (CORS 에러 발생 가능)**
 
-## Paragraph
+프론트엔드: `http://example.com` 
+백엔드: `http://api.example.com` (서브도메인 다름) 
 
-Xerum, quo qui aut unt expliquam qui dolut labo. Aque venitatiusda cum, voluptionse latur sitiae dolessi aut parist aut dollo enim qui voluptate ma dolestendit peritin re plis aut quas inctum laceat est volestemque commosa as cus endigna tectur, offic to cor sequas etum rerum idem sintibus eiur? Quianimin porecus evelectur, cum que nis nust voloribus ratem aut omnimi, sitatur? Quiatem. Nam, omnis sum am facea corem alique molestrunt et eos evelece arcillit ut aut eos eos nus, sin conecerem erum fuga. Ri oditatquam, ad quibus unda veliamenimin cusam et facea ipsamus es exerum sitate dolores editium rerore eost, temped molorro ratiae volorro te reribus dolorer sperchicium faceata tiustia prat.
+프론트엔드: `http://localhost:3000` 
+백엔드: `http://localhost:5000` (포트 번호 다름)
 
-Itatur? Quiatae cullecum rem ent aut odis in re eossequodi nonsequ idebis ne sapicia is sinveli squiatum, core et que aut hariosam ex eat.
+---
 
-## Images
+브라우저가 데이터를 로딩하는 과정에서 **CORS와 Origin 헤더**가 어떻게 작동하는지 조금 더 자세히 단계별로 작성해보자.
 
-### Syntax
+#### 📌 1. 브라우저가 HTML 문서를 요청 (초기 로딩 과정)
 
-```markdown
-![Alt text](./full/or/relative/path/of/image)
+웹 브라우저에서 유저가 특정 웹사이트(`https://frontend.com`)를 방문하면, 먼저 해당 사이트의 HTML 문서를 요청한다.
+
+ex:
+- **유저가 `https://frontend.com`에 접속**
+- **웹 서버가 HTML 문서를 반환**
+
+브라우저의 HTTP 요청:
+```http
+GET / HTTP/1.1
+Host: frontend.com
 ```
 
-### Output
+서버의 응답(HTML 문서 반환)
+```http
+HTTP/1.1 200 OK
+Content-Type: application/json
 
-![blog placeholder](/blog-placeholder-about.jpg)
-
-## Blockquotes
-
-The blockquote element represents content that is quoted from another source, optionally with a citation which must be within a `footer` or `cite` element, and optionally with in-line changes such as annotations and abbreviations.
-
-### Blockquote without attribution
-
-#### Syntax
-
-```markdown
-> Tiam, ad mint andaepu dandae nostion secatur sequo quae.  
-> **Note** that you can use _Markdown syntax_ within a blockquote.
-```
-
-#### Output
-
-> Tiam, ad mint andaepu dandae nostion secatur sequo quae.  
-> **Note** that you can use _Markdown syntax_ within a blockquote.
-
-### Blockquote with attribution
-
-#### Syntax
-
-```markdown
-> Don't communicate by sharing memory, share memory by communicating.<br>
-> — <cite>Rob Pike[^1]</cite>
-```
-
-#### Output
-
-> Don't communicate by sharing memory, share memory by communicating.<br>
-> — <cite>Rob Pike[^1]</cite>
-
-[^1]: The above quote is excerpted from Rob Pike's [talk](https://www.youtube.com/watch?v=PAAkCSZUG1c) during Gopherfest, November 18, 2015.
-
-## Tables
-
-### Syntax
-
-```markdown
-| Italics   | Bold     | Code   |
-| --------- | -------- | ------ |
-| _italics_ | **bold** | `code` |
-```
-
-### Output
-
-| Italics   | Bold     | Code   |
-| --------- | -------- | ------ |
-| _italics_ | **bold** | `code` |
-
-## Code Blocks
-
-### Syntax
-
-we can use 3 backticks ``` in new line and write snippet and close with 3 backticks on new line and to highlight language specific syntax, write one word of language name after first 3 backticks, for eg. html, javascript, css, markdown, typescript, txt, bash
-
-````markdown
-```html
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>Example HTML5 Document</title>
-  </head>
-  <body>
-    <p>Test</p>
-  </body>
-</html>
-```
-````
-
-### Output
-
-```html
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>Example HTML5 Document</title>
-  </head>
-  <body>
-    <p>Test</p>
-  </body>
+<html lang="ko">
+<head>
+    <title>My Frontend App</title>
+</head>
+<body>
+    <script src="/app.js"></script>
+</body>
 </html>
 ```
 
-## List Types
+이 시점에서 브라우저는 **자신의 Origin을 `https://frontend.com`으로 설정**한다.  
+즉, 이후 브라우저에서 실행되는 모든 JavaScript는 기본적으로 **`Origin: https://frontend.com`** 을 가지게 된다.
 
-### Ordered List
+#### 📌 2. 브라우저가 추가 리소스 (CSS, JS, API) 요청
 
-#### Syntax
+이제 브라우저는 HTML을 해석하고 추가적인 리소스(스타일, 스크립트, 이미지 등)를 로드한다. 
+예를 들어, `<script src="/app.js">`태그가 있으면 브라우저는 다음과 같은 요청을 보낸다.
 
-```markdown
-1. First item
-2. Second item
-3. Third item
+```http
+GET /app.js HTTP/1.1
+Host: frontend.com
+Origin: https://frontend.com
 ```
 
-#### Output
+이때, CSS, JS 파일은 같은 Origin에서 로드되기 때문에 CORS 이슈가 없다.
 
-1. First item
-2. Second item
-3. Third item
+#### 📌 3. 브라우저에서 API 요청 (CORS 적용)
 
-### Unordered List
+이제 **프론트엔드의 JavaScript 코드가 백엔드 API 요청**을 보낼 수 있다.
 
-#### Syntax
-
-```markdown
-- List item
-- Another item
-- And another item
+```js
+fetch('https://api.backend.com/data', {
+    method: 'GET'
+})
 ```
 
-#### Output
+이 요청은 브라우저에서 실행되므로 **자동으로 `Origin` 헤더가 포함**된다.
 
-- List item
-- Another item
-- And another item
-
-### Nested list
-
-#### Syntax
-
-```markdown
-- Fruit
-  - Apple
-  - Orange
-  - Banana
-- Dairy
-  - Milk
-  - Cheese
+```http
+GET /data HTTP/1.1
+Host: api.backend.com
+Origin: https://frontend.com
 ```
 
-#### Output
+여기서 `Origin: https://frontend.com`은 **브라우저가 HTML을 처음 받은 출처**를 기반으로 설정된 것이다.  
+즉, **웹사이트가 처음 로드될 때 설정된 Origin이 이후 모든 요청에 영향을 미치게 된다.**
 
-- Fruit
-  - Apple
-  - Orange
-  - Banana
-- Dairy
-  - Milk
-  - Cheese
+#### 📌 4. 백엔드의 CORS 응답 처리
 
-## Other Elements — abbr, sub, sup, kbd, mark
+보통은 백엔드(`https://api.backend.com`)가 응답을 보낼 때, 브라우저가 해당 요청을 허용할지 결정할 수 있도록 **CORS 헤더를 추가한다.**
 
-### Syntax
 
-```markdown
-<abbr title="Graphics Interchange Format">GIF</abbr> is a bitmap image format.
+node.js express ex. 
+```js
+const cors = require('cors');
+const express = require('express');
+const app = express();
 
-H<sub>2</sub>O
+app.use(cors()); // 모든 요청 허용
 
-X<sup>n</sup> + Y<sup>n</sup> = Z<sup>n</sup>
+// 특정 도메인만 허용할 수도 있음
+app.use(cors({ origin: 'https://frontend.com' }));
 
-Press <kbd>CTRL</kbd> + <kbd>ALT</kbd> + <kbd>Delete</kbd> to end the session.
-
-Most <mark>salamanders</mark> are nocturnal, and hunt for insects, worms, and other small creatures.
+app.listen(5000, () => console.log('Server running on port 5000'));
 ```
 
-### Output
+```http
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin: https://frontend.com
+Content-Type: application/json 
 
-<abbr title="Graphics Interchange Format">GIF</abbr> is a bitmap image format.
+{"message": "Success"}
+```
 
-H<sub>2</sub>O
+이렇게 하면 브라우저는 백엔드에서 반환된 데이터를 정상적으로 처리할 수 있다. 
+하지만 만약 백엔드가 `Access-Control-Allow-Origin` 헤더를 포함하지 않으면, 브라우저는 응답을 차단하고 **CORS 에러**를 발생시킨다.
 
-X<sup>n</sup> + Y<sup>n</sup> = Z<sup>n</sup>
+```http
+HTTP/1.1 403 Forbidden
+```
 
-Press <kbd>CTRL</kbd> + <kbd>ALT</kbd> + <kbd>Delete</kbd> to end the session.
+```http
+Access to fetch at 'https://api.backend.com/data' from origin 'https://frontend.com'
+has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present 
+on the requested resource.
+```
 
-Most <mark>salamanders</mark> are nocturnal, and hunt for insects, worms, and other small creatures.
+---
+
+## 그런데 백엔드 개발자가 없거나, CORS 설정 권한이 없다면?
+
+그럴 때는 어떻게 해결할 수 있을까? 실제로 최근에 외부 API에 요청을 보내 로컬에서 개발할 일이 있었는데, 해당 백엔드 서버를 수정할 수 있는 권한이 없는 경우가 있었다. 이런 경우 프론트엔드에서 해결할 수 있는 방법이 필요했는데, 관련해서 구글링과 ai의 도움을 받아 해결한 내용을 작성해본다.
+
+### Proxy로 우회하기
+
+두괄식으로 해결한 방법을 먼저 작성해봤다. 백엔드 코드를 수정할 수 없는 경우 프론트엔드에서 **프록시 서버 설정**으로 CORS 에러를 우회할 수 있다. 이는 브라우저가 백엔드 API가 아닌 프록시 서버를 대상으로 요청하도록 만들어서 CORS 정책을 피하는 접근방식이다.
+
+작업하던 개발 환경을 기준으로 과정을 설명해보겠다.
+
+프로젝트는 Vite + React로 생성해 작업중이었고, `vite.config.ts` 설정 파일에 프록시 서버를 설정할 수 있었다.
+
+```js
+import { defineConfig } from 'vite';
+
+export default defineConfig({
+  server: {
+    proxy: {
+      '/api': {
+	    //target: 요청을 전달할 원본 서버 (백엔드)
+        target: 'https://api.backend.com',
+        //changeOrigin: 원본 서버의 호스트 헤더를 변경
+        changeOrigin: true,
+        // rewrite: 경로 변경
+        rewrite: (path) => path.replace(/^\/api/, ''),
+        // secure: HTTPS 인증서 무시
+        secure: false,
+      }
+    }
+  }
+});
+```
+
+이렇게 설정후 브라우저에서 요청을 날려보면 
+
+```http
+
+//브라우저 요청
+GET http://localhost:5173/api/data 
+
+
+// Vite가 변환한 요청 (백엔드로 전달)
+GET https://api.backend.com/api/data 
+```
+
+Vite가 자동으로 `https://api.backend.com/data`로 요청을 전달해주는 방식으로 동작하는 걸 볼 수 있다.
+
+```http
+// changeOrigin: false (원래 요청 헤더 유지)
+Host: localhost:5173
+
+// changeOrigin: true (대상 서버의 호스트로 변경)
+Host: api.backend.com
+```
+
+`changeOrigin 을 true` 로 설정하면 원래 요청의 Host 헤더를 `target` 서버 도메인으로 변경해준다.
+따라서 프록시 서버가 직접 타겟 백엔드 서버로 요청하는 것처럼 동작하게 된다.
+
+`rewrite` 부분의 정규식은 `/api` 로 시작하는 경로를 빈스트링(' ') 으로 바꿔주는 역할을 한다. 
+
+```js
+// 프론트엔드에서 요청
+fetch('/api/data')
+
+// rewrite 적용 전 (잘못된 요청)
+GET https://api.backend.com/api/data
+
+// rewrite 적용 후 (정상 요청)
+GET https://api.backend.com/data
+
+```
+
+`secure 을 false` 로 설정하면 HTTPS 연결시 SSL 인증서를 검사하지 않겠다는 뜻이다. false는 최대한 개발환경에서만 사용하고 프로덕션 환경에서는 기본값인 true로 유지하는게 좋다고 한다.
+
+#### 잠깐, 🔐 SSL(HTTPS) 인증서 개념 & `secure` 옵션 이해하기
+
+##### **✅ SSL/TLS란? (HTTPS와의 관계)**
+
+SSL(Secure Sockets Layer)과 TLS(Transport Layer Security)는 **인터넷에서 데이터를 암호화하여 안전하게 주고받기 위한 보안 프로토콜**이다. 우리가 흔히 사용하는 **HTTPS(보안 HTTP)** 가 이 SSL/TLS를 이용하여 데이터를 보호한다.
+
+브라우저에서 `https://`로 시작하는 웹사이트에 접속하면, 그 사이트는 **SSL/TLS 인증서를 가지고 있다**는 의미이다.
+
+##### **✅ SSL 인증서의 역할**
+
+SSL 인증서는 다음과 같은 세 가지 주요 기능을 수행한다.
+
+**1️⃣ 데이터 암호화**
+- 클라이언트(브라우저)와 서버 간 전송되는 데이터를 **암호화**하여, 중간에서 해커가 가로채더라도 내용을 알아볼 수 없도록 한다.
+- 예) 로그인 정보, 신용카드 정보 등
+
+**2️⃣ 서버 인증 (신뢰성 보장)**
+- 사용자가 접속한 서버가 **진짜 서버인지 확인**하는 역할을 한다.
+- 예) 가짜 은행 사이트(피싱 사이트)에 속지 않도록 방지한다.
+
+**3️⃣ 데이터 무결성**
+- 데이터를 주고받을 때 **중간에서 변조되지 않았음을 보장**한다.
+
+
+---
+
+이렇게 외부 API로의 요청을 해결했다. 그동안 CORS 설정은 백엔드 개발자와 소통해서 해결해왔던터라 프론트엔드에서는 할 수 있는 것이 없다고 생각했는데, 우회할 수 있는 방법이 있다는 걸 알게 되었다.
+
+### 스토리북(Storybook)에서 또 CORS 에러가?
+
+이제 로컬에서 실제 앱 실행 후 요청까지 성공했는데, 컴포넌트 관리를 위해 사용하고 있는 스토리북에서 또 CORS에러를 마주하게 됐다. 앞선 내용에서 배웠듯이 오리진 중 포트넘버가 달라서 생기는 문제였다.
+
+스토리북에서도 마찬가지로 설정이 필요했는데, 스토리북 내부의 자체적인 동작방식의 영향으로 살짝 다른 방식으로 config를 작성해줘야했다. 아래는 작성한 `.storybook/main.ts` 파일이다.
+
+```js
+
+const config: StorybookConfig = {
+	stories: ["../src/**/*.stories.tsx"],
+	framework: {
+		name: "@storybook/react-vite",
+	},
+	async viteFinal(config, { configType = "DEVELOPMENT" }) {
+	  const env = loadEnv(configType, process.cwd(), "");
+	  
+	  return {
+	    ...config,
+	    server: {
+	      ...config.server,
+	      proxy: {
+	        "/api": {
+	          target:
+	            env.VITE_API_BASE_URL ||
+	            "https://api.backend.com",
+	          changeOrigin: true,
+	          rewrite: (path) => path.replace(/^\/api/, ""),
+	          secure: false,
+	        },
+	      },
+	    },
+	  };
+	}
+}
+```
+
+스토리북은 기본적으로 Webpack을 사용하여 개발서버를 실행한다. 그러나 Vite를 사용할 때는 framework에 Vite를 사용한다고 패키지를 설치한 후 명시해줘야한다. 그리고 viteFinal을 사용하여 최종적으로 Webpack -> Vite 설정으로 변경해줄 수 있다.
+
+
+그럼 스토리북에서도 CORS 해결!
