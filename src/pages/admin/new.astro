@@ -1,0 +1,87 @@
+---
+// /admin/new.astro - 관리자 전용 새 글 작성 페이지 (Tiptap 에디터 포함)
+import BaseHead from "../../components/BaseHead.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
+import TiptapEditor from "../../components/TiptapEditor";
+---
+
+<!doctype html>
+<html lang="ko">
+  <head>
+    <BaseHead
+      title="새 글 작성 | Joykim.site"
+      description="관리자용 새 블로그 글 작성 페이지"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/@tiptap/core@2.0.0-beta.265/dist/tiptap.min.css"
+    />
+    <style>
+      .editor-container {
+        max-width: 680px;
+        margin: 2rem auto;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        padding: 2rem;
+      }
+      .tiptap {
+        min-height: 200px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1rem;
+      }
+      .editor-toolbar {
+        margin-bottom: 1rem;
+      }
+    </style>
+  </head>
+  <body>
+    <Header />
+    <main>
+      <main>
+        <ul>
+          <li>
+            <form id="postForm" class="blog-card" style="display:flex; flex-direction:column; gap:1rem; background:#fff; border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.06); padding:2rem; max-width:600px; margin:2rem auto;">
+              <h1 class="title" style="margin-bottom:0.5rem;">새 블로그 글 작성</h1>
+              <input
+                type="text"
+                name="title"
+                placeholder="제목"
+                required
+                style="font-size:1.2rem;padding:0.5rem;border-radius:8px;border:1px solid #ddd;"
+              />
+              <input
+                type="text"
+                name="description"
+                placeholder="설명"
+                required
+                style="padding:0.5rem;border-radius:8px;border:1px solid #ddd;"
+              />
+              <input
+                type="text"
+                name="heroImage"
+                placeholder="대표 이미지 URL (선택)"
+                style="padding:0.5rem;border-radius:8px;border:1px solid #ddd;"
+              />
+              <TiptapEditor
+                client:only="react"
+                onChange={(content) => {
+                  const input = document.getElementById(
+                    "contentInput"
+                  ) as HTMLInputElement | null;
+                  if (input) input.value = content;
+                }}
+              />
+              <input type="hidden" name="content" id="contentInput" />
+              <button type="submit" style="padding:0.75rem 1.5rem; border-radius:8px; background:#222; color:#fff; font-size:1rem; border:none; cursor:pointer;">저장</button>
+            </form>
+          </li>
+        </ul>
+      </main>
+    </main>
+    <Footer />
+  </body>
+</html>
