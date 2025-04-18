@@ -18,39 +18,91 @@ const posts = (await getCollection("blog")).sort(
     <style>
       main {
         width: 960px;
+        margin: 0 auto;
       }
       ul {
         display: flex;
-        flex-wrap: wrap;
-        gap: 2rem;
+        flex-direction: column;
+        gap: 0.75rem;
         list-style-type: none;
         margin: 0;
         padding: 0;
       }
       ul li {
-        width: calc(50% - 1rem);
+        width: 100%;
+        flex: 1 0 auto;
+        margin-bottom: 0.75rem;
       }
       ul li * {
         text-decoration: none;
         transition: 0.2s ease;
-      }
-      ul li:first-child {
-        width: 100%;
-        margin-bottom: 1rem;
-        text-align: center;
-      }
-      ul li:first-child img {
-        width: 100%;
-      }
-      ul li:first-child .title {
-        font-size: 2.369rem;
       }
       ul li img {
         margin-bottom: 0.5rem;
         border-radius: 12px;
       }
       ul li a {
-        display: block;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        padding: 1rem;
+        transition: box-shadow 0.2s;
+      }
+      ul li a:hover {
+        box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+      }
+      .blog-card {
+        text-decoration: none;
+      }
+      .card-img-wrap {
+        flex-shrink: 0;
+        width: 120px;
+        height: 120px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        border-radius: 12px;
+        background: #f3f4f6;
+      }
+      .card-img-wrap img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 12px;
+      }
+      .card-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 120px;
+        min-width: 0;
+      }
+      .title {
+        font-size: 1.25rem;
+        margin-bottom: 0.25rem;
+        white-space: normal;
+        overflow: visible;
+        text-overflow: unset;
+      }
+      .excerpt {
+        font-size: 1rem;
+        color: #555;
+        margin-bottom: 0.25rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        line-height: 1.5;
+        max-height: 4.5em;
+      }
+      .date {
+        font-size: 1rem;
       }
       .title {
         margin: 0;
@@ -93,17 +145,24 @@ const posts = (await getCollection("blog")).sort(
           {
             posts.map((post) => (
               <li>
-                <a href={`/blog/${post.id}/`}>
-                  <img
-                    width={720}
-                    height={360}
-                    src={post.data.heroImage}
-                    alt=""
-                  />
-                  <h4 class="title">{post.data.title}</h4>
-                  <p class="date">
-                    <FormattedDate date={post.data.pubDate} />
-                  </p>
+                <a href={`/blog/${post.id}/`} class="blog-card">
+                  <div class="card-img-wrap">
+                    <img
+                      width={160}
+                      height={160}
+                      src={post.data.heroImage}
+                      alt={post.data.title}
+                    />
+                  </div>
+                  <div class="card-content">
+                    <h4 class="title">{post.data.title}</h4>
+                    <p class="excerpt">
+                      {(post.body ?? post.data.body ?? post.data.description)?.slice(0, 180)}
+                    </p>
+                    <p class="date">
+                      <FormattedDate date={post.data.pubDate} />
+                    </p>
+                  </div>
                 </a>
               </li>
             ))
