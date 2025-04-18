@@ -13,15 +13,15 @@
 ## 요구사항 체크리스트
 
 ### 초기 설정
-- [ ] Astro 프로젝트 생성
-- [ ] TypeScript 설정
-- [ ] React 통합 설정
-- [ ] Tailwind CSS 설정
-- [ ] Supabase 프로젝트 설정
+- [x] Astro 프로젝트 생성
+- [x] TypeScript 설정
+- [x] React 통합 설정
+- [x] Tailwind CSS 설정
+- [x] Supabase 프로젝트 설정 (022bd12)
   - [ ] GitHub OAuth 설정
   - [ ] 데이터베이스 스키마 설정
   - [ ] Row Level Security 정책 설정
-- [ ] 환경 변수 설정
+- [x] 환경 변수 설정
 
 ### 인증 시스템
 - [ ] Supabase Auth 설정
